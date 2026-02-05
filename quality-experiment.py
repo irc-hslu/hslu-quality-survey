@@ -23,7 +23,9 @@ if 'survey_completed' not in st.session_state:
 if 'video_sequence' not in st.session_state:
     st.session_state.video_sequence = []
 if 'time_used' not in st.session_state:
-    st.session_state.time_used = []
+    st.session_state.time_used = {}
+if 'start_time' not in st.session_state:
+    st.session_state.start_time = datetime.now()
 # Number of questions
 NUM_QUESTIONS = 12
 
@@ -163,7 +165,7 @@ def save_to_csv():
             'Question': question_num,
             'Video_Index': video_index if video_index is not None else 'Unknown',
             'Choice': answer,
-            #'TimeUsed': st.session_state.time_used[question_num]
+            'TimeUsed': st.session_state.time_used[question_num]
         })
     
     # Create DataFrame
@@ -255,7 +257,7 @@ Thank you for your time and contribution. </div>
     if st.session_state.current_question == -1:  
         #right_choice = st.radio("Training - Video with best quality:", ["Left", "Right"],key=f"qTRAINING_right", horizontal=True,index=None)
         #if right_choice == "Left" or right_choice == "Right": 
-        col1, col2= st.columns([1, 1])
+        col1, col2= st.columns([1, 1], gap=None)
         with col1:
             if st.button(" ", key="trainLeft", type="secondary",use_container_width = True ):   
                 st.session_state.current_question = -4
@@ -274,6 +276,7 @@ Thank you for your time and contribution. </div>
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
             if st.button("Next", type="primary", use_container_width=True):
+                st.session_state.start_time = datetime.now()
                 st.session_state.current_question = 0
                 st.rerun()
         return
@@ -290,7 +293,7 @@ Thank you for your time and contribution. </div>
         return
     else:
         right_choice=None
-        col1, col2= st.columns([1, 1])
+        col1, col2= st.columns([1, 1], gap=None)
         with col1:
             if st.button(" ", key="trainLeft", type="secondary",use_container_width = True ):   
                 right_choice="Left"
@@ -311,9 +314,13 @@ Thank you for your time and contribution. </div>
         # Update answer if right radio changed and auto-advance
         if right_choice != current_answer:
             st.session_state.answers[question_num] = right_choice
+            elapsed = datetime.now() - st.session_state.start_time
+            # Store time used as seconds (float) instead of full timedelta (e.g. "0 days 00:00:05")
+            st.session_state.time_used[question_num] = elapsed.total_seconds()
             # Auto-advance to next question or submit if last question
             if question_num < NUM_QUESTIONS:
                 st.session_state.current_question += 1
+                st.session_state.start_time = datetime.now()
                 st.rerun()
             else:
                 # Last question - auto-submit

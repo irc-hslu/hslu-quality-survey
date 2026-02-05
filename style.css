@@ -2,12 +2,12 @@
 footer {visibility: hidden;}
 header {visibility: hidden;}
 .stAppHeader {display: none;}
-.main .block-container {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    max-width: 100%;
+.stMainBlockContainer{
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+    padding-left: 0!important;
+    padding-right: 0!important;
+    max-width: 100%!important;
 }
 h1 {
     color: #1f77b4;
@@ -49,10 +49,8 @@ h1 {
     padding: 0.5rem 2rem;
     font-weight: 500;  
 }
+ 
 
-.stButton > button:hover {  
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-} 
 /* Progress and info messages */
 .stSuccess {
     background-color: #d4edda;
@@ -92,5 +90,13 @@ h1 {
         display: flex !important; 
         max-width: 100% !important;
         background: none;
-        border: 1px solid gray;
+        border: 2px solid gray;
+      } 
+      button[kind="secondary"]:hover {
+  
+        border: 2px solid red;
+      } 
+      button[kind="secondary"]:focus {
+        background: none;
+        border: 2px solid gray;
       } 
