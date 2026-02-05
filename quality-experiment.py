@@ -208,7 +208,13 @@ def load_css():
         }
         </style>
         """, unsafe_allow_html=True)
-
+def setLogoImage():
+    st.space("medium")
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
+    with col2:
+        st.image("img\hslulogo.svg", width=300)         
+    with col3:
+        st.image("img\Logo_Heat_512x142.jpg", width=250)
 def main():
     # Load CSS styles
     load_css()
@@ -217,10 +223,11 @@ def main():
     st.session_state.participant_id = generate_participant_id()
      
     # Show introduction screen if not started yet
-    if st.session_state.current_question == -3:
+    if st.session_state.current_question == -3: 
+        setLogoImage()
         st.title("Subjective quality assessment of Gaussian Splats vs Point Clouds")
         st.markdown("""  
- <div style="margin: 2em; text-align: justify; font-size: 1.2rem;"> 
+ <div style="margin: 4em; text-align: justify; font-size: 1.2rem;"> 
 Thank you for participating in this study. The goal is to evaluate and compare the visual quality of two different 3D representations: Gaussian splats and point clouds.
 <br>
 In this study, you will watch videos showing two 3D reconstructions of people, each created using one of the two representations. After viewing each pair, please choose the reconstruction with the better visual quality.
@@ -243,8 +250,9 @@ Thank you for your time and contribution. </div>
                 st.rerun()
         return
     if st.session_state.current_question == -2:
+        setLogoImage()
         st.title("Start of training")
-        st.markdown("""  <div style="margin: 2em; text-align: justify; font-size: 1.2rem;"> 
+        st.markdown("""  <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> 
                    Now the training starts. You will see a video showing two side-by-side 3D reconstructions, click on the best reconstruction video. 
                    <br> When you click on the video, the next stimulus is shown. <br>
                    </div>""", unsafe_allow_html=True)
@@ -269,9 +277,10 @@ Thank you for your time and contribution. </div>
         surveyVideo(videoUrls[11]) 
         return
     if st.session_state.current_question == -4:
+        setLogoImage()
         st.title("Training completed")
         st.markdown(""" 
-                   <div style="margin: 2em; text-align: justify; font-size: 1.2rem;"> The training is finished. Now, the experiment starts.
+                   <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> The training is finished. Now, the experiment starts.
                    </div></br>""", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
