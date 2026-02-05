@@ -94,8 +94,9 @@ h1 {
       } 
       button[kind="secondary"]:hover {
         background: none;
-        border: 2px solid red;
+        border: 3px solid red;
       } 
       button[kind="secondary"]:focus {
-        background: none; 
+        background: none;
+        border: 2px solid gray;
       } 
