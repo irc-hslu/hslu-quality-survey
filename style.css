@@ -97,6 +97,5 @@ h1 {
         border: 2px solid red;
       } 
       button[kind="secondary"]:focus {
-        background: none;
-        border: 2px solid gray;
+        background: none; 
       } 

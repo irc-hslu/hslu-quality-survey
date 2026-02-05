@@ -212,9 +212,9 @@ def setLogoImage():
     st.space("medium")
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
     with col2:
-        st.image("img\hslulogo.svg", width=300)         
+        st.image("img\\hslulogo.svg", width=300)         
     with col3:
-        st.image("img\Logo_Heat_512x142.jpg", width=250)
+        st.image("img\\Logo_Heat_512x142.jpg", width=250)
 def main():
     # Load CSS styles
     load_css()
