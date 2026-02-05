@@ -93,7 +93,7 @@ h1 {
         border: 2px solid gray;
       } 
       button[kind="secondary"]:hover {
-  
+        background: none;
         border: 2px solid red;
       } 
       button[kind="secondary"]:focus {
