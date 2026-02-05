@@ -22,7 +22,8 @@ if 'survey_completed' not in st.session_state:
     st.session_state.survey_completed = False 
 if 'video_sequence' not in st.session_state:
     st.session_state.video_sequence = []
-
+if 'time_used' not in st.session_state:
+    st.session_state.time_used = []
 # Number of questions
 NUM_QUESTIONS = 12
 
@@ -161,7 +162,8 @@ def save_to_csv():
             'Participant_ID': st.session_state.participant_id or 'Unknown',
             'Question': question_num,
             'Video_Index': video_index if video_index is not None else 'Unknown',
-            'Choice': answer
+            'Choice': answer,
+            #'TimeUsed': st.session_state.time_used[question_num]
         })
     
     # Create DataFrame
