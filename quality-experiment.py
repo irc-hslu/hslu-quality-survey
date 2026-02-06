@@ -172,12 +172,13 @@ def save_to_csv():
     df = pd.DataFrame(data)
     
     # Save to CSV (append mode to preserve previous responses)
-    csv_file = 'survey_responses.csv'
-    if os.path.exists(csv_file):
-        existing_df = pd.read_csv(csv_file)
-        df = pd.concat([existing_df, df], ignore_index=True)
-    
+    csv_file = f'survey_responses_{st.session_state.start_time.strftime("%Y-%m-%d_%H-%M-%S")}.csv'
     df.to_csv(csv_file, index=False)
+    concat_csv='survey_responses.csv'
+    if os.path.exists(concat_csv):
+        existing_df = pd.read_csv(concat_csv)
+        df = pd.concat([existing_df, df], ignore_index=True)
+    df.to_csv(concat_csv, index=False)
     return csv_file
 def surveyVideo(video_url):
     video_html = f"""
