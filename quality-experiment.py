@@ -130,24 +130,33 @@ def get_video_index_for_question(question_num):
 
 def generate_participant_id():
     """Generate a participant ID based on the number of existing survey responses"""
-    csv_file = 'survey_responses.csv'
+    csv_file = 'participantID.csv'
     
     if not os.path.exists(csv_file): 
+        with open(csv_file, 'w') as f:
+            f.write('1')
+            f.close()
         return 1
     
     try:
         # Read existing CSV to count unique participants
-        existing_df = pd.read_csv(csv_file)
-        
-        if existing_df.empty or 'Participant_ID' not in existing_df.columns: 
-            return 1
-        
-        # Get unique participant IDs
-        next_num = existing_df['Participant_ID'].max() 
-        next_num += 1
-        return next_num
+        with open(csv_file, 'r+') as f:
+            first_line = f.readline().strip()
+            if not first_line:
+                f.write('1')
+                return 1
+            try:
+                last_num = int(first_line)
+            except ValueError:
+                last_num = 0
+            output = last_num + 1
+            f.seek(0)
+            f.write(str(output))
+            print(output)
+            f.truncate()
+            f.close()
+            return output 
     except Exception:
-        # If there's any error reading the file, start with P001
         return 1
 
 def save_to_csv():
@@ -219,12 +228,9 @@ def setLogoImage():
 def main():
     # Load CSS styles
     load_css()
-    
-    # Auto-generate participant ID if not set
-    st.session_state.participant_id = generate_participant_id()
-     
     # Show introduction screen if not started yet
     if st.session_state.current_question == -3: 
+        st.session_state.participant_id = generate_participant_id()
         setLogoImage()
         st.title("Subjective quality assessment of Gaussian Splats vs Point Clouds")
         st.markdown("""  
