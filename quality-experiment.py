@@ -6,7 +6,7 @@ import random
 import streamlit.components.v1 as components
 # Page configuration
 st.set_page_config(
-    page_title="Subjective quality assessment of Gaussian Splats vs Point Clouds ",
+    page_title="Subjective Quality Assessment of Gaussian Splats vs Point Clouds ",
     page_icon="🎬",
     layout="wide"
 )
@@ -232,9 +232,9 @@ def main():
     if st.session_state.current_question == -3: 
         st.session_state.participant_id = generate_participant_id()
         setLogoImage()
-        st.title("Subjective quality assessment of Gaussian Splats vs Point Clouds")
+        st.title("Subjective Quality Assessment of Gaussian Splats vs Point Clouds")
         st.markdown("""  
- <div style="margin: 4em; text-align: justify; font-size: 1.2rem;"> 
+ <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> 
 Thank you for participating in this study. The goal is to evaluate and compare the visual quality of two different 3D representations: Gaussian splats and point clouds.
 <br>
 In this study, you will watch videos showing two 3D reconstructions of people, each created using one of the two representations. After viewing each pair, please choose the reconstruction with the better visual quality.
@@ -258,10 +258,10 @@ Thank you for your time and contribution. </div>
         return
     if st.session_state.current_question == -2:
         setLogoImage()
-        st.title("Start of training")
+        st.title("Start of Training")
         st.markdown("""  <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> 
-                   Now the training starts. You will see a video showing two side-by-side 3D reconstructions, click on the best reconstruction video. 
-                   <br> When you click on the video, the next stimulus is shown. <br>
+                   Now the training begins. You will see a video with two side-by-side 3D reconstructions. Your task is to click on the reconstruction with best visual quality. Each video is 10 seconds long and will loop continuously 
+                   <br> When you click on the reconstruction,the training finishes. In the actual experiment, a click submits your choice and advances to the next video. <br>
                    </div>""", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
@@ -285,9 +285,9 @@ Thank you for your time and contribution. </div>
         return
     if st.session_state.current_question == -4:
         setLogoImage()
-        st.title("Training completed")
+        st.title("Training Completed")
         st.markdown(""" 
-                   <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> The training is finished. Now, the experiment starts.
+                   <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> The training is complete. You can now begin the experiment.
                    </div></br>""", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
@@ -304,7 +304,7 @@ Thank you for your time and contribution. </div>
         # Check if survey is completed
     if st.session_state.get('survey_completed', False):
         csv_file = save_to_csv()
-        st.success(f"Survey completed! Thank you for contributing this research project.")
+        st.success(f"Survey completed! Thank you for taking part and contributing to this research study.")
         st.balloons()
         return
     else:
