@@ -1,17 +1,39 @@
 import streamlit as st
 import pandas as pd
-import os
 from datetime import datetime
 import random
 import streamlit.components.v1 as components
-import requests
-headers = {
-    "ngrok-skip-browser-warning": "true" 
-}
-response = requests.post(
-    "http://localhost:8501", 
-    headers=headers
-)
+import gspread
+from google.oauth2.service_account import Credentials
+
+# Google Sheets configuration
+SCOPES = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive'
+]
+
+def get_google_sheet():
+    """Connect to Google Sheets using service account credentials from Streamlit secrets"""
+    try:
+        # Get credentials from Streamlit secrets
+        credentials = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=SCOPES
+        )
+        client = gspread.authorize(credentials)
+        
+        # Open the spreadsheet by name or URL
+        # You can change this to your spreadsheet name
+        spreadsheet = client.open(st.secrets["spreadsheet_name"])
+        return spreadsheet
+    except Exception as e:
+        st.error(f"Failed to connect to Google Sheets: {e}")
+        return None
+
+# NOTE: To bypass ngrok's browser warning, users need to:
+# 1. Use a browser extension to add "ngrok-skip-browser-warning: true" header
+# 2. Or use ngrok's paid plan with custom domain
+# 3. Or instruct users to click through the warning page once
 # Page configuration
 st.set_page_config(
     page_title="Subjective Quality Assessment of Gaussian Splats vs Point Clouds ",
@@ -157,66 +179,83 @@ def get_video_index_for_question(question_num):
     return None
 
 def generate_participant_id():
-    """Generate a participant ID based on the number of existing survey responses"""
-    csv_file = 'participantID.csv'
-    
-    if not os.path.exists(csv_file): 
-        with open(csv_file, 'w') as f:
-            f.write('1')
-            f.close()
-        return 1
-    
+    """Generate a participant ID based on the number stored in Google Sheets"""
     try:
-        # Read existing CSV to count unique participants
-        with open(csv_file, 'r+') as f:
-            first_line = f.readline().strip()
-            if not first_line:
-                f.write('1')
-                return 1
+        spreadsheet = get_google_sheet()
+        if spreadsheet is None:
+            # Fallback to random ID if Google Sheets connection fails
+            return random.randint(1, 1000000)
+        
+        # Try to get or create 'ParticipantID' worksheet
+        try:
+            worksheet = spreadsheet.worksheet('ParticipantID')
+        except gspread.WorksheetNotFound:
+            # Create the worksheet if it doesn't exist
+            worksheet = spreadsheet.add_worksheet(title='ParticipantID', rows=10, cols=1)
+            worksheet.update_cell(1, 1, '0')
+        
+        # Get current ID and increment
+        current_value = worksheet.cell(1, 1).value
+        if current_value is None or current_value == '':
+            last_num = 0
+        else:
             try:
-                last_num = int(first_line)
+                last_num = int(current_value)
             except ValueError:
                 last_num = 0
-            output = last_num + 1
-            f.seek(0)
-            f.write(str(output))
-            print(output)
-            f.truncate()
-            f.close()
-            return output 
-    except Exception:
-        return 1
+        
+        new_id = last_num + 1
+        worksheet.update_cell(1, 1, str(new_id))
+        return new_id
+        
+    except Exception as e:
+        st.warning(f"Could not generate participant ID from Google Sheets: {e}")
+        # Fallback to random ID
+        return random.randint(1, 1000000)
 
-def save_to_csv():
-    """Save all answers to CSV file"""
+def save_to_google_sheets():
+    """Save all answers to Google Sheets"""
     if not st.session_state.answers:
-        return
+        return False
     
-    # Prepare data for CSV
-    data = []
-    for question_num in range(1, NUM_QUESTIONS + 1):
-        answer = st.session_state.answers.get(question_num, "No answer")
-        video_index = get_video_index_for_question(question_num)
-        data.append({
-            'Participant_ID': st.session_state.participant_id or 'Unknown',
-            'Question': question_num,
-            'Video_Index': video_index if video_index is not None else 'Unknown',
-            'Choice': answer,
-            'TimeUsed': st.session_state.time_used[question_num]
-        })
-    
-    # Create DataFrame
-    df = pd.DataFrame(data)
-    
-    # Save to CSV (append mode to preserve previous responses)
-    csv_file = f'survey_responses_{st.session_state.start_time.strftime("%Y-%m-%d_%H-%M-%S")}.csv'
-    df.to_csv(csv_file, index=False)
-    concat_csv='survey_responses.csv'
-    if os.path.exists(concat_csv):
-        existing_df = pd.read_csv(concat_csv)
-        df = pd.concat([existing_df, df], ignore_index=True)
-    df.to_csv(concat_csv, index=False)
-    return csv_file
+    try:
+        spreadsheet = get_google_sheet()
+        if spreadsheet is None:
+            return False
+        
+        # Try to get or create 'Responses' worksheet
+        try:
+            worksheet = spreadsheet.worksheet('Responses')
+        except gspread.WorksheetNotFound:
+            # Create the worksheet with headers
+            worksheet = spreadsheet.add_worksheet(title='Responses', rows=1000, cols=7)
+            worksheet.update('A1:G1', [['Timestamp', 'Participant_ID', 'Question', 'Video_Index', 'Choice', 'TimeUsed', 'Session_Start']])
+        
+        # Prepare data for Google Sheets
+        rows_to_add = []
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        session_start = st.session_state.start_time.strftime("%Y-%m-%d %H:%M:%S")
+        
+        for question_num in range(1, NUM_QUESTIONS + 1):
+            answer = st.session_state.answers.get(question_num, "No answer")
+            video_index = get_video_index_for_question(question_num)
+            rows_to_add.append([
+                timestamp,
+                st.session_state.participant_id or 'Unknown',
+                question_num,
+                video_index if video_index is not None else 'Unknown',
+                answer,
+                st.session_state.time_used.get(question_num, 0),
+                session_start
+            ])
+        
+        # Append all rows at once
+        worksheet.append_rows(rows_to_add, value_input_option='USER_ENTERED')
+        return True
+        
+    except Exception as e:
+        st.error(f"Failed to save to Google Sheets: {e}")
+        return False
 def surveyVideo(video_url):
     video_html = f"""
     <video autoplay loop muted playsinline src="{video_url}" > 
@@ -227,25 +266,13 @@ def surveyVideo(video_url):
 def load_css():
     """Load and inject CSS styles"""
     css_file = 'style.css'
-    if os.path.exists(css_file):
+    try:
         with open(css_file, 'r') as f:
             css = f.read()
             st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
-    else:
+    except FileNotFoundError:
         # Fallback inline CSS if file doesn't exist
-        st.markdown("""
-        <style>
-        .main .block-container {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-        h1 {
-            color: #1f77b4;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        </style>
-        """, unsafe_allow_html=True)
+        st.warning("Fallback inline CSS if file doesn't exist")
 def setLogoImage():
     st.space("medium")
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1]) 
@@ -333,8 +360,11 @@ Thank you for your time and contribution. </div>
     choice_index = 0 if current_answer == "Left" else (1 if current_answer == "Right" else None)
         # Check if survey is completed
     if st.session_state.get('survey_completed', False):
-        csv_file = save_to_csv()
-        st.success(f"Survey completed! Thank you for taking part and contributing to this research study.")
+        setLogoImage()
+        if save_to_google_sheets():
+            st.success("Survey completed! Thank you for taking part and contributing to this research study.")
+        else:
+            st.warning("Survey completed! However, there was an issue saving responses. Please contact the administrator.")
         st.balloons()
         return
     else:
