@@ -260,7 +260,7 @@ Thank you for your time and contribution. </div>
         setLogoImage()
         st.title("Start of Training")
         st.markdown("""  <div style="margin: 4em; text-align: center; font-size: 1.2rem;"> 
-                   Now the training begins. You will see a video with two side-by-side 3D reconstructions. Your task is to click on the reconstruction with best visual quality. Each video is 10 seconds long and will loop continuously 
+                   Now the training begins. You will see a video with two side-by-side 3D reconstructions. Your task is to click on the reconstruction with best visual quality. Each video is 10 seconds long and will loop continuously. Please maximize the window to better inspect the videos. 
                    <br> When you click on the reconstruction,the training finishes. In the actual experiment, a click submits your choice and advances to the next video. <br>
                    </div>""", unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1, 1, 1])
