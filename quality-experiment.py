@@ -302,7 +302,7 @@ Thank you for your time and contribution. </div>
         
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
-            if st.button("Start Survey", type="primary", use_container_width=True):
+            if st.button("Next", type="primary", use_container_width=True):
                 #st.session_state.participant_id = generate_participant_id()
                 # Generate video sequence using balanced Latin square 
                 #array_indices = list(range(len(videoUrls)))
