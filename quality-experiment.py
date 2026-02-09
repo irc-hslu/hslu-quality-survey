@@ -4,7 +4,6 @@ import os
 from datetime import datetime
 import random
 import streamlit.components.v1 as components
-st.header("ngrok-skip-browser-warning = true")
 # Page configuration
 st.set_page_config(
     page_title="Subjective Quality Assessment of Gaussian Splats vs Point Clouds ",
