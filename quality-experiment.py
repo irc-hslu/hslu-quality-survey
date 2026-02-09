@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import random
 import streamlit.components.v1 as components
+st.header("ngrok-skip-browser-warning = true")
 # Page configuration
 st.set_page_config(
     page_title="Subjective Quality Assessment of Gaussian Splats vs Point Clouds ",
@@ -31,18 +32,19 @@ NUM_QUESTIONS = 12
 
 # Video URLs for each question
 videoUrls = [
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4",
-    "https://raw.githubusercontent.com/kitylam9/surveyvideo/main/gsvspcd.mp4"
+    "videos/den_1_perf_2_GS_PCD.mp4",
+    "videos/den_1_perf_2_PCD_GS.mp4",
+    "videos/nathalie_1_perf_3_GS_PCD.mp4",
+    "videos/nathalie_1_perf_3_PCD_GS.mp4",
+    "videos/philipp_1_perf_5_GS_PCD.mp4",
+    "videos/philipp_1_perf_5_PCD_GS.mp4",
+    "videos/philipp_1_perf_6_GS_PCD.mp4",
+    "videos/philipp_1_perf_6_PCD_GS.mp4",
+    "videos/simone_2_perf_3_GS_PCD.mp4",
+    "videos/simone_2_perf_3_PCD_GS.mp4",
+    "videos/thanos_2_perf_2_GS_PCD.mp4",
+    "videos/thanos_2_perf_2_PCD_GS.mp4",
+    "videos/training.mp4"
 ]
 def balancedLatinSquareWithBlocks6(participantId):
 	random.seed(datetime.now().timestamp())
@@ -287,7 +289,7 @@ Thank you for your time and contribution. </div>
             if st.button(" ", key="trainRight", type="secondary", use_container_width = True ):
                 st.session_state.current_question = -4
                 st.rerun()
-        surveyVideo(videoUrls[11]) 
+        surveyVideo(videoUrls[12]) 
         return
     if st.session_state.current_question == -4:
         setLogoImage()
