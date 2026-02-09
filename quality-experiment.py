@@ -4,6 +4,14 @@ import os
 from datetime import datetime
 import random
 import streamlit.components.v1 as components
+import requests
+headers = {
+    "ngrok-skip-browser-warning": "true" 
+}
+response = requests.post(
+    "http://localhost:8501", 
+    headers=headers
+)
 # Page configuration
 st.set_page_config(
     page_title="Subjective Quality Assessment of Gaussian Splats vs Point Clouds ",
@@ -31,19 +39,32 @@ NUM_QUESTIONS = 12
 
 # Video URLs for each question
 videoUrls = [
-    "videos/den_1_perf_2_GS_PCD.mp4",
-    "videos/den_1_perf_2_PCD_GS.mp4",
-    "videos/nathalie_1_perf_3_GS_PCD.mp4",
-    "videos/nathalie_1_perf_3_PCD_GS.mp4",
-    "videos/philipp_1_perf_5_GS_PCD.mp4",
-    "videos/philipp_1_perf_5_PCD_GS.mp4",
-    "videos/philipp_1_perf_6_GS_PCD.mp4",
-    "videos/philipp_1_perf_6_PCD_GS.mp4",
-    "videos/simone_2_perf_3_GS_PCD.mp4",
-    "videos/simone_2_perf_3_PCD_GS.mp4",
-    "videos/thanos_2_perf_2_GS_PCD.mp4",
-    "videos/thanos_2_perf_2_PCD_GS.mp4",
-    "videos/training.mp4"
+#    "videos/den_1_perf_2_GS_PCD.mp4",
+#    "videos/den_1_perf_2_PCD_GS.mp4",
+#    "videos/nathalie_1_perf_3_GS_PCD.mp4",
+#    "videos/nathalie_1_perf_3_PCD_GS.mp4",
+#    "videos/philipp_1_perf_5_GS_PCD.mp4",
+#    "videos/philipp_1_perf_5_PCD_GS.mp4",
+#    "videos/philipp_1_perf_6_GS_PCD.mp4",
+#    "videos/philipp_1_perf_6_PCD_GS.mp4",
+#    "videos/simone_2_perf_3_GS_PCD.mp4",
+#    "videos/simone_2_perf_3_PCD_GS.mp4",
+#    "videos/thanos_2_perf_2_GS_PCD.mp4",
+#    "videos/thanos_2_perf_2_PCD_GS.mp4",
+#    "videos/training.mp4"
+    "https://drive.switch.ch/index.php/s/BK5i2WWlAyqgN6e/download",
+    "https://drive.switch.ch/index.php/s/Em5LKTNyd1Q7Noh/download",
+    "https://drive.switch.ch/index.php/s/2aLNTwCSA7hxJoF/download",
+    "https://drive.switch.ch/index.php/s/8fKxU3YXct9eTbk/download",
+    "https://drive.switch.ch/index.php/s/mo1sZyDaZX5Oc5m/download",
+    "https://drive.switch.ch/index.php/s/Kahcf6TMK12q10q/download",
+    "https://drive.switch.ch/index.php/s/3Eep8QOUbxoCb9Y/download",
+    "https://drive.switch.ch/index.php/s/GeiuNSQpKv7rGkP/download",
+    "https://drive.switch.ch/index.php/s/H6ERCoS2hRrUCNp/download",
+    "https://drive.switch.ch/index.php/s/LLusIqa1DCeDwYb/download",
+    "https://drive.switch.ch/index.php/s/Iay1Wi9JfEEJkhy/download",
+    "https://drive.switch.ch/index.php/s/5ucLQ9NtwLJAQMX/download",
+    "https://drive.switch.ch/index.php/s/2Y52cs2O057wkVu/download"
 ]
 def balancedLatinSquareWithBlocks6(participantId):
 	random.seed(datetime.now().timestamp())
