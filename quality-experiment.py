@@ -47,12 +47,18 @@ videoUrls = [
 def balancedLatinSquareWithBlocks6(participantId):
 	random.seed(datetime.now().timestamp())
 
-	AB_BA_Stimuli = [[r"0AB", r"0BA"],
-					 [r"1AB", r"1BA"],
-					 [r"2AB", r"2BA"],
-					 [r"3AB", r"3BA"],
-					 [r"4AB", r"4BA"],
-					 [r"5AB", r"5BA"]]
+	#AB_BA_Stimuli = [[r"0AB", r"0BA"],
+	#				 [r"1AB", r"1BA"],
+	#				 [r"2AB", r"2BA"],
+	#				 [r"3AB", r"3BA"],
+	#				 [r"4AB", r"4BA"],
+	#				 [r"5AB", r"5BA"]]
+	AB_BA_Stimuli = [[0, 1],
+					 [2, 3],
+					 [4, 5],
+					 [6, 7],
+					 [8, 9],
+					 [10, 11]]
 
 	Random_AB_BA_Stimuli = [random.sample(row, k=len(row)) for row in AB_BA_Stimuli]
 
@@ -114,11 +120,11 @@ def balanced_latin_square(array, participant_id):
         result = result[::-1]  # Reverse the list 
     return result
 
-def get_video_url(question_num):
-    """Get video URL for a specific question (1-indexed)"""
-    if 1 <= question_num <= len(videoUrls):
-        return videoUrls[question_num - 1]
-    return None
+#def get_video_url(question_num):
+#    """Get video URL for a specific question (1-indexed)"""
+#    if 1 <= question_num <= len(videoUrls):
+#        return videoUrls[question_num - 1]
+#    return None
 
 def get_video_index_for_question(question_num):
     """Get the video index for a specific question based on the balanced Latin square sequence"""
@@ -229,8 +235,7 @@ def main():
     # Load CSS styles
     load_css()
     # Show introduction screen if not started yet
-    if st.session_state.current_question == -3: 
-        st.session_state.participant_id = generate_participant_id()
+    if st.session_state.current_question == -3:  
         setLogoImage()
         st.title("Subjective Quality Assessment of Gaussian Splats vs Point Clouds")
         st.markdown("""  
@@ -249,10 +254,11 @@ Thank you for your time and contribution. </div>
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
             if st.button("Start Survey", type="primary", use_container_width=True):
-                # Generate video sequence using balanced Latin square
-                participant_id_num = int(st.session_state.participant_id) 
-                array_indices = list(range(len(videoUrls)))
-                st.session_state.video_sequence = balanced_latin_square(array_indices, participant_id_num)
+                #st.session_state.participant_id = generate_participant_id()
+                # Generate video sequence using balanced Latin square 
+                #array_indices = list(range(len(videoUrls)))
+                #st.session_state.video_sequence = balanced_latin_square(array_indices, participant_id_num)
+                #st.session_state.video_sequence = balancedLatinSquareWithBlocks6(st.session_state.participant_id)
                 st.session_state.current_question = -2 
                 st.rerun()
         return
@@ -292,6 +298,8 @@ Thank you for your time and contribution. </div>
         col1, col2, col3 = st.columns([1, 1, 1])
         with col2:
             if st.button("Next", type="primary", use_container_width=True):
+                st.session_state.participant_id = generate_participant_id() 
+                st.session_state.video_sequence = balancedLatinSquareWithBlocks6(st.session_state.participant_id)
                 st.session_state.start_time = datetime.now()
                 st.session_state.current_question = 0
                 st.rerun()
