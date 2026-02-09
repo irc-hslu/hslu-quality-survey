@@ -229,12 +229,11 @@ def save_to_google_sheets():
         except gspread.WorksheetNotFound:
             # Create the worksheet with headers
             worksheet = spreadsheet.add_worksheet(title='Responses', rows=1000, cols=7)
-            worksheet.update('A1:G1', [['Timestamp', 'Participant_ID', 'Question', 'Video_Index', 'Choice', 'TimeUsed', 'Session_Start']])
+            worksheet.update('A1:G1', [['Timestamp', 'Participant_ID', 'Question', 'Video_Index', 'Choice', 'TimeUsed' ]])
         
         # Prepare data for Google Sheets
         rows_to_add = []
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        session_start = st.session_state.start_time.strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
         
         for question_num in range(1, NUM_QUESTIONS + 1):
             answer = st.session_state.answers.get(question_num, "No answer")
@@ -245,8 +244,7 @@ def save_to_google_sheets():
                 question_num,
                 video_index if video_index is not None else 'Unknown',
                 answer,
-                st.session_state.time_used.get(question_num, 0),
-                session_start
+                st.session_state.time_used.get(question_num, 0)
             ])
         
         # Append all rows at once
