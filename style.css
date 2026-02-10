@@ -99,3 +99,6 @@ h1 {
       button[kind="secondary"]:focus {
         background: none;
       } 
+ img {
+    border-radius: 0 !important;
+}
